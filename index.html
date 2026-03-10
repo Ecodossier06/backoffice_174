@@ -213,9 +213,11 @@ tr:hover td{background:rgba(255,255,255,.02);cursor:pointer;}
       <h1>BAR-TH-174</h1>
       <p>Espace administration</p>
     </div>
-    <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="admin@domaine.fr" autocomplete="email"></div>
-    <div class="lf"><label>Mot de passe</label><input type="password" id="l-pwd" placeholder="••••••••"></div>
-    <button class="btn-login" id="btn-login" onclick="doLogin()">Connexion</button>
+    <form onsubmit="event.preventDefault();doLogin();" autocomplete="on">
+      <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="admin@domaine.fr" autocomplete="email"></div>
+      <div class="lf"><label>Mot de passe</label><input type="password" id="l-pwd" placeholder="••••••••" autocomplete="current-password"></div>
+      <button type="submit" class="btn-login" id="btn-login">Connexion</button>
+    </form>
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
@@ -453,11 +455,13 @@ tr:hover td{background:rgba(255,255,255,.02);cursor:pointer;}
       <div class="page-header"><div><div class="page-title">Secrétaires</div><div class="page-sub">Gestion des accès</div></div></div>
       <div class="section-card">
         <div class="section-title">➕ Nouvelle secrétaire</div>
-        <div class="fi-row c2">
-          <div class="fi-group"><div class="fi-label">Email *</div><input class="fi-input" id="sec-email" placeholder="secretaire@domaine.fr" type="email"></div>
-          <div class="fi-group"><div class="fi-label">Mot de passe *</div><input class="fi-input" id="sec-pwd" placeholder="Minimum 8 caractères" type="password"></div>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="createSecretaire()">Créer le compte</button>
+        <form onsubmit="event.preventDefault();createSecretaire();" autocomplete="off">
+          <div class="fi-row c2">
+            <div class="fi-group"><div class="fi-label">Email *</div><input class="fi-input" id="sec-email" placeholder="secretaire@domaine.fr" type="email" autocomplete="new-email"></div>
+            <div class="fi-group"><div class="fi-label">Mot de passe *</div><input class="fi-input" id="sec-pwd" placeholder="Minimum 8 caractères" type="password" autocomplete="new-password"></div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm">Créer le compte</button>
+        </form>
         <div class="fi-err" id="e-sec" style="margin-top:8px;"></div>
         <div style="margin-top:12px;padding:10px 14px;background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.2);border-radius:8px;font-size:12px;color:var(--blue);">
           ℹ️ La secrétaire recevra un email de confirmation. Son rôle sera automatiquement assigné.
@@ -578,7 +582,13 @@ tr:hover td{background:rgba(255,255,255,.02);cursor:pointer;}
 <script>
 const SB_URL  = "https://upultfflbxrghptavwvf.supabase.co";
 const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdWx0ZmZsYnhyZ2hwdGF2d3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNjU1MDYsImV4cCI6MjA4ODY0MTUwNn0.Uq2AnyqYJeCztqzDjUWNYk0LvhS3gGIXn3TlxQo17ug";
-const sb = supabase.createClient(SB_URL, SB_ANON);
+const sb = supabase.createClient(SB_URL, SB_ANON, {
+  auth: {
+    persistSession: true,
+    storageKey: 'bar174-auth',
+    storage: window.localStorage
+  }
+});
 
 let currentRole=null, currentUser=null;
 let allDossiers=[], allApporteurs=[], allMateriel=[], allSecretaires=[];
@@ -589,7 +599,6 @@ const GESTE_LABELS={comble:'Combles',plancher_bas:'Plancher bas',mur_interieur_2
 const STATUT_BEN={grand_precaire:'Grand Précaire',sci:'SCI'};
 
 // ── AUTH ──
-document.getElementById('l-pwd').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 async function doLogin(){
   const email=document.getElementById('l-email').value.trim();
   const pwd=document.getElementById('l-pwd').value;
