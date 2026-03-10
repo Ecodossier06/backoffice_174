@@ -1323,8 +1323,8 @@ async function createSecretaire(){
     });
   }
 
-  // Assigner le rôle secrétaire
-  const {error:roleErr}=await sb.from('user_roles').insert({user_id:data.user.id,role:'secretaire'});
+  // Assigner le rôle secrétaire via RPC
+  const {error:roleErr}=await sb.rpc('create_secretaire',{p_user_id:data.user.id});
   if(roleErr){errEl.textContent='Compte créé mais erreur rôle: '+roleErr.message;return;}
 
   allSecretaires.push({user_id:data.user.id,role:'secretaire'});
