@@ -598,7 +598,9 @@ tr:hover td{background:rgba(255,255,255,.02);cursor:pointer;}
 <script>
 const SB_URL  = "https://upultfflbxrghptavwvf.supabase.co";
 const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdWx0ZmZsYnhyZ2hwdGF2d3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNjU1MDYsImV4cCI6MjA4ODY0MTUwNn0.Uq2AnyqYJeCztqzDjUWNYk0LvhS3gGIXn3TlxQo17ug";
-const sb = supabase.createClient(SB_URL, SB_ANON);
+const sb = supabase.createClient(SB_URL, SB_ANON, {
+  auth: { lock: false }
+});
 
 let currentRole=null, currentUser=null;
 let allDossiers=[], allApporteurs=[], allMateriel=[], allSecretaires=[];
