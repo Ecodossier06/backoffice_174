@@ -683,6 +683,8 @@ async function doLogin(){
   document.getElementById('login-err').textContent='';
   if(!email||!pwd){document.getElementById('login-err').textContent='Champs requis.';return;}
   btn.disabled=true;btn.textContent='Connexion…';
+  // Nettoyer les sessions corrompues avant login
+  localStorage.clear();sessionStorage.clear();
   const {error}=await sb.auth.signInWithPassword({email,password:pwd});
   if(error){document.getElementById('login-err').textContent='Identifiants incorrects.';btn.disabled=false;btn.textContent='Connexion';}
 }
