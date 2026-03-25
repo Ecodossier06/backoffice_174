@@ -212,7 +212,7 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
       <div class="login-logo-icon">🏠</div>
       <h1>BAR-TH-174</h1>
       <p>Espace administration</p>
-      <p>v.2.1</p>
+      <p>v.2</p>
     </div>
     <form onsubmit="event.preventDefault();doLogin();" autocomplete="on">
       <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="admin@domaine.fr" autocomplete="email"></div>
@@ -684,6 +684,14 @@ async function doLogin(){
   if(!email||!pwd){document.getElementById('login-err').textContent='Champs requis.';return;}
   btn.disabled=true;btn.textContent='Connexion…';
   appInitialized=false;
+  // Nettoyer le storage corrompu avant login
+  const sbKey = Object.keys(localStorage).find(k=>k.startsWith('sb-'));
+  if(sbKey){
+    try{
+      const stored=JSON.parse(localStorage.getItem(sbKey));
+      if(!stored?.access_token && !stored?.refresh_token) localStorage.removeItem(sbKey);
+    }catch(e){localStorage.removeItem(sbKey);}
+  }
   const {data,error}=await sb.auth.signInWithPassword({email,password:pwd});
   if(error){
     document.getElementById('login-err').textContent='Identifiants incorrects.';
@@ -693,9 +701,9 @@ async function doLogin(){
 async function doLogout(){appInitialized=false;await sb.auth.signOut({scope:'local'});location.reload();}
 
 let appInitialized = false;
+let initRetried = false;
 
 sb.auth.onAuthStateChange(async(event,session)=>{
-  // TOKEN_REFRESHED et USER_UPDATED ne nécessitent pas de ré-init
   if(event==='TOKEN_REFRESHED' || event==='USER_UPDATED') return;
   
   if(event==='SIGNED_OUT'){
@@ -713,6 +721,13 @@ sb.auth.onAuthStateChange(async(event,session)=>{
     }catch(e){
       console.error('initApp error:',e);
       appInitialized = false;
+      // Auto-recovery : nettoyer le storage et retenter une seule fois
+      if(!initRetried){
+        initRetried = true;
+        console.warn('Auto-recovery: nettoyage du storage et retry…');
+        localStorage.clear(); sessionStorage.clear();
+        location.reload();
+      }
     }
   } else if(!session){
     appInitialized = false;
