@@ -212,7 +212,7 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
       <div class="login-logo-icon">🏠</div>
       <h1>BAR-TH-174</h1>
       <p>Espace administration</p>
-      <p>v.3</p>
+      <p>v.2</p>
     </div>
     <form onsubmit="event.preventDefault();doLogin();" autocomplete="on">
       <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="admin@domaine.fr" autocomplete="email"></div>
@@ -683,11 +683,12 @@ async function doLogin(){
   document.getElementById('login-err').textContent='';
   if(!email||!pwd){document.getElementById('login-err').textContent='Champs requis.';return;}
   btn.disabled=true;btn.textContent='Connexion…';
-  // Nettoyer proprement avant login (sans casser le storage Supabase)
-  try{ await sb.auth.signOut({scope:'local'}); }catch(e){}
   appInitialized=false;
-  const {error}=await sb.auth.signInWithPassword({email,password:pwd});
-  if(error){document.getElementById('login-err').textContent='Identifiants incorrects.';btn.disabled=false;btn.textContent='Connexion';}
+  const {data,error}=await sb.auth.signInWithPassword({email,password:pwd});
+  if(error){
+    document.getElementById('login-err').textContent='Identifiants incorrects.';
+    btn.disabled=false;btn.textContent='Connexion';
+  }
 }
 async function doLogout(){appInitialized=false;await sb.auth.signOut({scope:'local'});location.reload();}
 
