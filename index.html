@@ -1560,7 +1560,7 @@ function buildTable179(data, containerId){
   const wrap=document.getElementById(containerId);
   if(data.length===0){wrap.innerHTML='<div class="empty"><div class="empty-icon">📭</div>Aucun dossier</div>';return;}
   wrap.innerHTML=`<table>
-    <thead><tr><th>Bénéficiaire</th><th>Statut</th><th>Tél</th><th>Apporteur</th><th>Assigné à</th><th>Échéance</th><th>Dossier</th><th>Créé le</th></tr></thead>
+    <thead><tr><th>Bénéficiaire</th><th>Type de bénéficiaire</th><th>Tél</th><th>Apporteur</th><th>Assigné à</th><th>Échéance</th><th>Dossier</th><th>Créé le</th></tr></thead>
     <tbody>${data.map(d=>dossierRow179(d,apMap)).join('')}</tbody>
   </table>`;
 }
