@@ -212,7 +212,7 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
       <div class="login-logo-icon">⚡</div>
       <h1>BackOffice CEE</h1>
       <p>Espace administration</p>
-      <p>v.2.3</p>
+      <p>v.2.4</p>
     </div>
     <form onsubmit="event.preventDefault();doLogin();" autocomplete="on">
       <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="admin@domaine.fr" autocomplete="email"></div>
@@ -263,10 +263,19 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="page-header"><div><div class="page-title">Tableau de bord</div><div class="page-sub" id="dash-date">—</div></div></div>
-    <div class="stat-grid" id="stat-grid"></div>
+
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;">📁 BAR-TH-174</div>
+      <div class="stat-grid" id="stat-grid"></div>
       <div class="chart-grid">
         <div class="chart-card"><div class="chart-title">Évolution — 30 derniers jours</div><div class="chart-wrap" style="height:200px"><canvas id="chart-evol"></canvas></div></div>
         <div class="chart-card"><div class="chart-title">Par statut</div><div class="chart-wrap" style="height:200px"><canvas id="chart-statut"></canvas></div></div>
+      </div>
+
+      <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;margin-top:8px;">🌬️ BAR-TH-179</div>
+      <div class="stat-grid" id="stat-grid-179"></div>
+      <div class="chart-grid">
+        <div class="chart-card"><div class="chart-title">Évolution — 30 derniers jours</div><div class="chart-wrap" style="height:200px"><canvas id="chart-evol-179"></canvas></div></div>
+        <div class="chart-card"><div class="chart-title">Par statut</div><div class="chart-wrap" style="height:200px"><canvas id="chart-statut-179"></canvas></div></div>
       </div>
     </div>
 
@@ -328,8 +337,9 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
           <div class="fi-group"><div class="fi-label">Email *</div><input class="fi-input" id="nd-email" placeholder="marie@email.fr" type="email"></div>
           <div class="fi-group"><div class="fi-label">Code apporteur</div><select class="fi-select" id="nd-apporteur"><option value="">— Aucun —</option></select></div>
         </div>
-        <div class="fi-row">
+        <div class="fi-row c2">
           <div class="fi-group"><div class="fi-label">Adresse *</div><input class="fi-input" id="nd-adresse" placeholder="15 rue des Lilas, 75001 Paris"></div>
+          <div class="fi-group"><div class="fi-label">Vendeur</div><input class="fi-input" id="nd-deposant" placeholder="Prénom Nom du vendeur"></div>
         </div>
       </div>
       <div class="section-card">
@@ -468,8 +478,9 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
           <div class="fi-group"><div class="fi-label">Email *</div><input class="fi-input" id="n9-email" placeholder="marie@email.fr" type="email"></div>
           <div class="fi-group"><div class="fi-label">Code apporteur</div><select class="fi-select" id="n9-apporteur"><option value="">— Aucun —</option></select></div>
         </div>
-        <div class="fi-row">
+        <div class="fi-row c2">
           <div class="fi-group"><div class="fi-label">Adresse *</div><input class="fi-input" id="n9-adresse" placeholder="15 rue des Lilas, 75001 Paris"></div>
+          <div class="fi-group"><div class="fi-label">Vendeur</div><input class="fi-input" id="n9-deposant" placeholder="Prénom Nom du vendeur"></div>
         </div>
       </div>
       <div class="section-card">
@@ -646,6 +657,9 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
       </div>
       <div class="fi-row c2">
         <div class="fi-group"><div class="fi-label">Adresse</div><input class="fi-input" id="md-adresse"></div>
+        <div class="fi-group"><div class="fi-label">Vendeur</div><input class="fi-input" id="md-deposant" placeholder="Prénom Nom du vendeur"></div>
+      </div>
+      <div class="fi-row c2">
         <div class="fi-group"><div class="fi-label">Catégorie</div>
           <select class="fi-select" id="md-statut-ben">
             <option value="">—</option>
@@ -794,7 +808,7 @@ async function sbQuery(fn){
 
 let currentRole=null, currentUser=null;
 let allDossiers=[], allDossiers179=[], allApporteurs=[], allMateriel=[], allSecretaires=[];
-let chartEvol=null, chartStatut=null;
+let chartEvol=null, chartStatut=null, chartEvol179=null, chartStatut179=null;
 let currentDossier=null, modalMateriels=[], modalPjFiles=[];
 const ROLE_LABELS={admin:'👑 Admin',responsable:'🎯 Responsable',secretaire:'📋 Secrétaire'};
 const GESTE_LABELS={comble:'Combles',plancher_bas:'Plancher bas',mur_interieur_25:'Mur int. 25%'};
@@ -971,6 +985,7 @@ function populateSelects(){
 
 // ── DASHBOARD ──
 function renderDashboard(){
+  // ── 174 ──
   const grid=document.getElementById('stat-grid');
   let html=`<div class="stat-card"><div class="stat-icon">📁</div><div class="stat-label">Total</div><div class="stat-val">${allDossiers.length}</div></div>`;
   customStatuts.forEach(s=>{
@@ -979,6 +994,16 @@ function renderDashboard(){
   });
   grid.innerHTML=html;
   renderChartEvol(); renderChartStatut();
+
+  // ── 179 ──
+  const grid179=document.getElementById('stat-grid-179');
+  let html179=`<div class="stat-card"><div class="stat-icon">🌬️</div><div class="stat-label">Total</div><div class="stat-val">${allDossiers179.length}</div></div>`;
+  customStatuts.forEach(s=>{
+    const count=allDossiers179.filter(d=>d.statut_dossier===s.key).length;
+    html179+=`<div class="stat-card" style="--accent:${s.color}"><div class="stat-icon"><span class="badge" style="background:${s.color}22;color:${s.color};font-size:14px;">●</span></div><div class="stat-label">${s.label}</div><div class="stat-val">${count}</div></div>`;
+  });
+  grid179.innerHTML=html179;
+  renderChartEvol179(); renderChartStatut179();
 }
 
 function renderChartEvol(){
@@ -1001,6 +1026,28 @@ function renderChartStatut(){
   const ctx=document.getElementById('chart-statut').getContext('2d');
   if(chartStatut) chartStatut.destroy();
   chartStatut=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#6b7f72',font:{size:11},padding:12}}}}});
+}
+
+function renderChartEvol179(){
+  const labels=[],counts=[];
+  for(let i=29;i>=0;i--){
+    const d=new Date(); d.setDate(d.getDate()-i);
+    const k=d.toISOString().slice(0,10);
+    labels.push(d.toLocaleDateString('fr-FR',{day:'numeric',month:'short'}));
+    counts.push(allDossiers179.filter(x=>x.created_at?.slice(0,10)===k).length);
+  }
+  const ctx=document.getElementById('chart-evol-179').getContext('2d');
+  if(chartEvol179) chartEvol179.destroy();
+  chartEvol179=new Chart(ctx,{type:'line',data:{labels,datasets:[{label:'Dossiers',data:counts,borderColor:'#2c7be5',backgroundColor:'rgba(44,123,229,.08)',borderWidth:2,pointRadius:2,fill:true,tension:0.4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{color:'#6b7f72',font:{size:10}},grid:{color:'rgba(200,210,204,.4)'}},y:{ticks:{color:'#6b7f72',stepSize:1},grid:{color:'rgba(200,210,204,.4)'},beginAtZero:true}}}});
+}
+
+function renderChartStatut179(){
+  const labels=customStatuts.map(s=>s.label);
+  const colors=customStatuts.map(s=>s.color+'cc');
+  const data=customStatuts.map(s=>allDossiers179.filter(d=>d.statut_dossier===s.key).length);
+  const ctx=document.getElementById('chart-statut-179').getContext('2d');
+  if(chartStatut179) chartStatut179.destroy();
+  chartStatut179=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:colors,borderWidth:0,hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#6b7f72',font:{size:11},padding:12}}}}});
 }
 
 // ── PAGES ──
@@ -1115,6 +1162,7 @@ async function openDossier(id){
   document.getElementById('md-tel').value=d.tel||'';
   document.getElementById('md-email').value=d.email||'';
   document.getElementById('md-adresse').value=d.adresse_client||'';
+  document.getElementById('md-deposant').value=d.prenom_deposant||'';
   document.getElementById('md-statut-ben').value=d.statut||'';
   document.getElementById('md-type').value=d.type_logement||'';
   document.getElementById('md-surface').value=d.surface_m2||'';
@@ -1222,6 +1270,7 @@ async function saveDossier(){
     tel:document.getElementById('md-tel').value.trim(),
     email:document.getElementById('md-email').value.trim(),
     adresse_client:document.getElementById('md-adresse').value.trim(),
+    prenom_deposant:document.getElementById('md-deposant').value.trim()||null,
     statut:document.getElementById('md-statut-ben').value||null,
     type_logement:document.getElementById('md-type').value||null,
     surface_m2:parseInt(document.getElementById('md-surface').value)||null,
@@ -1381,6 +1430,7 @@ async function createDossier(){
     geste_1:document.getElementById('nd-geste1').value||null,
     geste_2:document.getElementById('nd-geste2').value||null,
     code_apporteur:document.getElementById('nd-apporteur').value||null,
+    prenom_deposant:document.getElementById('nd-deposant').value.trim()||null,
     secretaire_id:document.getElementById('nd-secretaire').value||null,
     date_echeance:document.getElementById('nd-echeance').value||null,
     montant_prime:parseFloat(document.getElementById('nd-prime').value)||null,
@@ -1396,7 +1446,7 @@ async function createDossier(){
 }
 
 function resetNewDossier(){
-  ['nd-nom','nd-prenom','nd-tel','nd-email','nd-adresse','nd-surface','nd-commentaire','nd-prime','nd-rac','nd-echeance'].forEach(id=>{
+  ['nd-nom','nd-prenom','nd-tel','nd-email','nd-adresse','nd-deposant','nd-surface','nd-commentaire','nd-prime','nd-rac','nd-echeance'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   ['nd-statut','nd-type','nd-chauffage','nd-geste1','nd-geste2','nd-apporteur','nd-secretaire'].forEach(id=>{
@@ -1487,6 +1537,7 @@ async function createDossier179(){
     type_logement:document.getElementById('n9-type').value||null,
     type_chauffage:chauffage,
     code_apporteur:document.getElementById('n9-apporteur').value||null,
+    prenom_deposant:document.getElementById('n9-deposant').value.trim()||null,
     secretaire_id:document.getElementById('n9-secretaire').value||null,
     date_echeance:document.getElementById('n9-echeance').value||null,
     montant_prime:parseFloat(document.getElementById('n9-prime').value)||null,
@@ -1501,7 +1552,7 @@ async function createDossier179(){
 }
 
 function resetNewDossier179(){
-  ['n9-nom','n9-prenom','n9-tel','n9-email','n9-adresse','n9-surface','n9-commentaire','n9-prime','n9-rac','n9-echeance'].forEach(id=>{
+  ['n9-nom','n9-prenom','n9-tel','n9-email','n9-adresse','n9-deposant','n9-surface','n9-commentaire','n9-prime','n9-rac','n9-echeance'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   ['n9-statut','n9-type','n9-chauffage','n9-apporteur','n9-secretaire'].forEach(id=>{
