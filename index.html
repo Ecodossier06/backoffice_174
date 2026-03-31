@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Backoffice · BackOffice CEE</title>
+<title>BackOffice CEE</title>
 <link rel="icon" href="favicon.ico">
 <meta property="og:image" content="og-adv.png">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Mono:wght@400;500&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -209,8 +209,8 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">
-      <div class="login-logo-icon">🏠</div>
-      <h1>BAR-TH-174</h1>
+      <div class="login-logo-icon">⚡</div>
+      <h1>BackOffice CEE</h1>
       <p>Espace administration</p>
       <p>v.2.2</p>
     </div>
@@ -228,16 +228,21 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
   <aside class="sidebar">
     <div class="sidebar-logo">
       <div class="sidebar-logo-top">
-        <div class="s-icon">🏠</div>
-        <div><div class="s-name">BAR-TH-174</div><div class="s-sub">Backoffice ADV</div></div>
+        <div class="s-icon">⚡</div>
+        <div><div class="s-name">BackOffice CEE</div><div class="s-sub">Gestion dossiers</div></div>
       </div>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">Général</div>
       <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span>Tableau de bord</button>
+      <div class="nav-section">BAR-TH-174</div>
       <button class="nav-item" onclick="showPage('dossiers',this)"><span class="nav-icon">📁</span>Tous les dossiers</button>
       <button class="nav-item" onclick="showPage('mes-dossiers',this)"><span class="nav-icon">👤</span>Mes dossiers</button>
       <button class="nav-item" onclick="showPage('nouveau-dossier',this)"><span class="nav-icon">➕</span>Nouveau dossier</button>
+      <div class="nav-section">BAR-TH-179</div>
+      <button class="nav-item" onclick="showPage('dossiers-179',this)"><span class="nav-icon">🌬️</span>Tous les dossiers</button>
+      <button class="nav-item" onclick="showPage('mes-dossiers-179',this)"><span class="nav-icon">👤</span>Mes dossiers</button>
+      <button class="nav-item" onclick="showPage('nouveau-dossier-179',this)"><span class="nav-icon">➕</span>Nouveau dossier</button>
       <div class="nav-section" id="nav-gestion" style="display:none">Gestion</div>
       <button class="nav-item" id="nav-apporteurs" style="display:none" onclick="showPage('apporteurs',this)"><span class="nav-icon">🤝</span>Apporteurs</button>
       <button class="nav-item" id="nav-materiel" style="display:none" onclick="showPage('materiel',this)"><span class="nav-icon">🔧</span>Matériel</button>
@@ -404,6 +409,126 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
         <button class="btn btn-ghost" onclick="resetNewDossier()">Annuler</button>
       </div>
       <div class="fi-err" id="e-nd" style="margin-top:10px;font-size:13px;"></div>
+    </div>
+
+    <!-- DOSSIERS 179 -->
+    <div class="page" id="page-dossiers-179">
+      <div class="page-header">
+        <div><div class="page-title">Dossiers BAR-TH-179</div><div class="page-sub" id="count-dossiers-179">—</div></div>
+      </div>
+      <div class="filters">
+        <input class="search-input" type="text" id="search-d179" placeholder="🔍 Nom, email, code apporteur…" oninput="filterDossiers179()">
+        <select class="filter-select" id="f-statut-d179" onchange="filterDossiers179()">
+          <option value="">Tous statuts</option>
+          <option value="nouveau">Nouveau</option>
+          <option value="en_cours">En cours</option>
+          <option value="valide">Validé</option>
+          <option value="refuse">Refusé</option>
+        </select>
+        <select class="filter-select" id="f-secretaire-d179" onchange="filterDossiers179()">
+          <option value="">Toutes sécrétaires</option>
+        </select>
+      </div>
+      <div class="table-wrap" id="tw-dossiers-179">
+        <div class="loading"><div class="spinner"></div>Chargement…</div>
+      </div>
+    </div>
+
+    <!-- MES DOSSIERS 179 -->
+    <div class="page" id="page-mes-dossiers-179">
+      <div class="page-header">
+        <div><div class="page-title">Mes dossiers BAR-TH-179</div><div class="page-sub">Classés par date d'échéance</div></div>
+      </div>
+      <div class="table-wrap" id="tw-mes-dossiers-179">
+        <div class="loading"><div class="spinner"></div>Chargement…</div>
+      </div>
+    </div>
+
+    <!-- NOUVEAU DOSSIER 179 -->
+    <div class="page" id="page-nouveau-dossier-179">
+      <div class="page-header"><div><div class="page-title">Nouveau dossier BAR-TH-179</div><div class="page-sub">VMC double flux — Saisie manuelle</div></div></div>
+      <div class="section-card">
+        <div class="section-title">👤 Bénéficiaire</div>
+        <div class="fi-row c2">
+          <div class="fi-group"><div class="fi-label">Nom *</div><input class="fi-input" id="n9-nom" placeholder="Dupont"></div>
+          <div class="fi-group"><div class="fi-label">Prénom *</div><input class="fi-input" id="n9-prenom" placeholder="Marie"></div>
+        </div>
+        <div class="fi-row c2">
+          <div class="fi-group">
+            <div class="fi-label">Statut *</div>
+            <select class="fi-select" id="n9-statut">
+              <option value="">— Choisir —</option>
+              <option value="grand_precaire">Grand Précaire</option>
+              <option value="sci">SCI</option>
+            </select>
+          </div>
+          <div class="fi-group"><div class="fi-label">Téléphone *</div><input class="fi-input" id="n9-tel" placeholder="06 12 34 56 78" type="tel"></div>
+        </div>
+        <div class="fi-row c2">
+          <div class="fi-group"><div class="fi-label">Email *</div><input class="fi-input" id="n9-email" placeholder="marie@email.fr" type="email"></div>
+          <div class="fi-group"><div class="fi-label">Code apporteur</div><select class="fi-select" id="n9-apporteur"><option value="">— Aucun —</option></select></div>
+        </div>
+        <div class="fi-row">
+          <div class="fi-group"><div class="fi-label">Adresse *</div><input class="fi-input" id="n9-adresse" placeholder="15 rue des Lilas, 75001 Paris"></div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-title">🏠 Logement</div>
+        <div class="fi-row c4">
+          <div class="fi-group">
+            <div class="fi-label">Type *</div>
+            <select class="fi-select" id="n9-type">
+              <option value="">—</option>
+              <option value="maison_individuelle">Maison individuelle</option>
+              <option value="appartement">Appartement</option>
+              <option value="maison_jumelee">Maison jumelée</option>
+              <option value="maison_mitoyenne">Maison mitoyenne</option>
+            </select>
+          </div>
+          <div class="fi-group"><div class="fi-label">Surface m² *</div><input class="fi-input" id="n9-surface" type="number" placeholder="85" min="1"></div>
+          <div class="fi-group">
+            <div class="fi-label">Chauffage *</div>
+            <select class="fi-select" id="n9-chauffage">
+              <option value="">—</option>
+              <option value="gaz">Gaz</option>
+              <option value="fioul">Fioul</option>
+              <option value="electrique">Électrique</option>
+              <option value="bois">Bois/Pellet</option>
+              <option value="pompe_chaleur">PAC</option>
+              <option value="autre">Autre</option>
+            </select>
+          </div>
+          <div class="fi-group">
+            <div class="fi-label">Secrétaire</div>
+            <select class="fi-select" id="n9-secretaire"><option value="">— Aucune —</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="section-title">💼 Gestion</div>
+        <div class="fi-row c4">
+          <div class="fi-group"><div class="fi-label">Date échéance</div><input class="fi-input" id="n9-echeance" type="date"></div>
+          <div class="fi-group"><div class="fi-label">Montant prime (€)</div><input class="fi-input" id="n9-prime" type="number" step="0.01" placeholder="0.00"></div>
+          <div class="fi-group"><div class="fi-label">Reste à charge (€)</div><input class="fi-input" id="n9-rac" type="number" step="0.01" placeholder="0.00"></div>
+          <div class="fi-group">
+            <div class="fi-label">Statut</div>
+            <select class="fi-select" id="n9-statut-dossier">
+              <option value="nouveau">Nouveau</option>
+              <option value="en_cours">En cours</option>
+              <option value="valide">Validé</option>
+              <option value="refuse">Refusé</option>
+            </select>
+          </div>
+        </div>
+        <div class="fi-row">
+          <div class="fi-group"><div class="fi-label">Commentaire</div><textarea class="fi-textarea" id="n9-commentaire" placeholder="Notes internes…"></textarea></div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn btn-primary" onclick="createDossier179()">💾 Créer le dossier</button>
+        <button class="btn btn-ghost" onclick="resetNewDossier179()">Annuler</button>
+      </div>
+      <div class="fi-err" id="e-n9" style="margin-top:10px;font-size:13px;"></div>
     </div>
 
     <!-- APPORTEURS -->
@@ -668,7 +793,7 @@ async function sbQuery(fn){
 }
 
 let currentRole=null, currentUser=null;
-let allDossiers=[], allApporteurs=[], allMateriel=[], allSecretaires=[];
+let allDossiers=[], allDossiers179=[], allApporteurs=[], allMateriel=[], allSecretaires=[];
 let chartEvol=null, chartStatut=null;
 let currentDossier=null, modalMateriels=[], modalPjFiles=[];
 const ROLE_LABELS={admin:'👑 Admin',responsable:'🎯 Responsable',secretaire:'📋 Secrétaire'};
@@ -759,7 +884,7 @@ async function initApp(user){
     document.getElementById('nav-gestion').style.display='block';
     const btnExp=document.getElementById('btn-export'); if(btnExp) btnExp.style.display='inline-flex';
   }
-  await Promise.all([loadDossiers(),loadApporteurs(),loadMateriel(),loadSecretaires(),loadStatuts()]);
+  await Promise.all([loadDossiers(),loadDossiers179(),loadApporteurs(),loadMateriel(),loadSecretaires(),loadStatuts()]);
   renderDashboard();
   populateSelects();
 }
@@ -767,7 +892,11 @@ async function initApp(user){
 // ── LOAD DATA ──
 async function loadDossiers(){
   const {data}=await sbQuery(()=>sb.from('formulaire_174').select('*').order('created_at',{ascending:false}));
-  allDossiers=data||[];
+  allDossiers=(data||[]).map(d=>({...d,source_table:'formulaire_174'}));
+}
+async function loadDossiers179(){
+  const {data}=await sbQuery(()=>sb.from('formulaire_179').select('*').order('created_at',{ascending:false}));
+  allDossiers179=(data||[]).map(d=>({...d,source_table:'formulaire_179'}));
 }
 async function loadApporteurs(){
   const {data}=await sbQuery(()=>sb.from('apporteurs').select('*').order('nom'));
@@ -805,7 +934,7 @@ setInterval(async()=>{
 
 function populateSelects(){
   // Apporteurs dans nouveau dossier
-  const apSels=[document.getElementById('nd-apporteur')];
+  const apSels=[document.getElementById('nd-apporteur'),document.getElementById('n9-apporteur')];
   apSels.forEach(sel=>{
     if(!sel) return;
     sel.innerHTML='<option value="">— Aucun —</option>';
@@ -815,7 +944,7 @@ function populateSelects(){
     });
   });
   // Assignation (secrétaires + responsables)
-  const secSels=[document.getElementById('nd-secretaire'),document.getElementById('md-secretaire'),document.getElementById('f-secretaire-d')];
+  const secSels=[document.getElementById('nd-secretaire'),document.getElementById('md-secretaire'),document.getElementById('f-secretaire-d'),document.getElementById('n9-secretaire'),document.getElementById('f-secretaire-d179')];
   secSels.forEach(sel=>{
     if(!sel) return;
     const isFilter=sel.id==='f-secretaire-d';
@@ -882,6 +1011,8 @@ function showPage(name,el){
   el.classList.add('active');
   if(name==='dossiers') renderDossiers(allDossiers);
   if(name==='mes-dossiers') renderMesDossiers();
+  if(name==='dossiers-179') renderDossiers179(allDossiers179);
+  if(name==='mes-dossiers-179') renderMesDossiers179();
   if(name==='apporteurs') renderApporteurs();
   if(name==='materiel') renderMateriel();
   if(name==='secretaires') renderSecretaires();
@@ -968,9 +1099,9 @@ function renderMesDossiers(){
   buildTable(mine,'tw-mes-dossiers');
 }
 
-// ── OPEN DOSSIER ──
+// ── OPEN DOSSIER (174 ou 179) ──
 async function openDossier(id){
-  currentDossier=allDossiers.find(d=>d.id===id);
+  currentDossier=[...allDossiers,...allDossiers179].find(d=>d.id===id);
   if(!currentDossier) return;
   const d=currentDossier;
 
@@ -1105,10 +1236,12 @@ async function saveDossier(){
     commentaire:document.getElementById('md-commentaire').value||null,
     commentaire_technique:document.getElementById('md-commentaire-tech').value||null,
   };
-  const {error}=await sb.from('formulaire_174').update(upd).eq('id',id);
+  const tableName = currentDossier?.source_table || 'formulaire_174';
+  const {error}=await sb.from(tableName).update(upd).eq('id',id);
   if(error){showToast(error.message,true);return;}
-  const idx=allDossiers.findIndex(d=>d.id===id);
-  if(idx>-1) allDossiers[idx]={...allDossiers[idx],...upd};
+  const arr = tableName==='formulaire_179' ? allDossiers179 : allDossiers;
+  const idx=arr.findIndex(d=>d.id===id);
+  if(idx>-1) arr[idx]={...arr[idx],...upd};
 
   // Upload nouvelles PJ
   if(modalPjFiles.length>0){
@@ -1143,6 +1276,8 @@ async function saveDossier(){
   const activePage=document.querySelector('.page.active');
   if(activePage?.id==='page-dossiers') filterDossiers();
   else if(activePage?.id==='page-mes-dossiers') renderMesDossiers();
+  else if(activePage?.id==='page-dossiers-179') filterDossiers179();
+  else if(activePage?.id==='page-mes-dossiers-179') renderMesDossiers179();
   showToast('Dossier enregistré ✓');
 }
 
@@ -1254,7 +1389,7 @@ async function createDossier(){
     commentaire:document.getElementById('nd-commentaire').value||null,
   }).select().single();
   if(error){errEl.textContent=error.message;return;}
-  allDossiers.unshift(data);
+  allDossiers.unshift({...data,source_table:'formulaire_174'});
   renderDashboard();
   resetNewDossier();
   showToast('Dossier créé ✓');
@@ -1268,6 +1403,111 @@ function resetNewDossier(){
     const el=document.getElementById(id); if(el) el.value='';
   });
   document.getElementById('nd-statut-dossier').value='nouveau';
+}
+
+// ── DOSSIERS 179 ──
+function renderDossiers179(data){
+  document.getElementById('count-dossiers-179').textContent=`${data.length} dossier${data.length>1?'s':''}`;
+  buildTable179(data,'tw-dossiers-179');
+}
+
+function filterDossiers179(){
+  const q=document.getElementById('search-d179').value.toLowerCase();
+  const st=document.getElementById('f-statut-d179').value;
+  const sec=document.getElementById('f-secretaire-d179').value;
+  const filtered=allDossiers179.filter(d=>{
+    const txt=`${d.nom} ${d.prenom} ${d.email||''} ${d.code_apporteur||''}`.toLowerCase();
+    return(!q||txt.includes(q))&&(!st||d.statut_dossier===st)&&(!sec||d.secretaire_id===sec);
+  });
+  document.getElementById('count-dossiers-179').textContent=`${filtered.length} dossier${filtered.length>1?'s':''}`;
+  buildTable179(filtered,'tw-dossiers-179');
+}
+
+function renderMesDossiers179(){
+  const mine=allDossiers179
+    .filter(d=>d.secretaire_id===currentUser.id)
+    .sort((a,b)=>{
+      if(!a.date_echeance && !b.date_echeance) return 0;
+      if(!a.date_echeance) return 1;
+      if(!b.date_echeance) return -1;
+      return new Date(a.date_echeance)-new Date(b.date_echeance);
+    });
+  if(mine.length===0){
+    document.getElementById('tw-mes-dossiers-179').innerHTML='<div class="empty"><div class="empty-icon">📭</div>Aucun dossier assigné</div>';
+    return;
+  }
+  buildTable179(mine,'tw-mes-dossiers-179');
+}
+
+function buildTable179(data, containerId){
+  const apMap={};
+  allApporteurs.forEach(a=>apMap[a.code]=a.nom);
+  const wrap=document.getElementById(containerId);
+  if(data.length===0){wrap.innerHTML='<div class="empty"><div class="empty-icon">📭</div>Aucun dossier</div>';return;}
+  wrap.innerHTML=`<table>
+    <thead><tr><th>Bénéficiaire</th><th>Statut</th><th>Tél</th><th>Apporteur</th><th>Assigné à</th><th>Échéance</th><th>Dossier</th><th>Créé le</th></tr></thead>
+    <tbody>${data.map(d=>dossierRow179(d,apMap)).join('')}</tbody>
+  </table>`;
+}
+
+function dossierRow179(d, apMap){
+  const date=new Date(d.created_at).toLocaleDateString('fr-FR');
+  const ech=d.date_echeance?new Date(d.date_echeance).toLocaleDateString('fr-FR'):'—';
+  const echClass=echeanceClass(d.date_echeance);
+  const ap=d.code_apporteur?(apMap[d.code_apporteur]||d.code_apporteur):'—';
+  const assigned=d.secretaire_id?allSecretaires.find(s=>s.user_id===d.secretaire_id):null;
+  const assignedName=assigned?(assigned.name||'?'):'—';
+  return `<tr onclick="openDossier('${d.id}')">
+    <td><div style="font-weight:600;">${d.nom} ${d.prenom}</div><div class="mono">${d.adresse_client||'—'}</div></td>
+    <td><span class="badge ${d.statut}">${STATUT_BEN[d.statut]||d.statut}</span></td>
+    <td><div style="font-size:12px;">${d.tel||'—'}</div></td>
+    <td><div class="mono">${ap}</div></td>
+    <td><div style="font-size:12px;">${assignedName}</div></td>
+    <td><span class="${echClass}">${ech}</span></td>
+    <td>${statutBadge(d.statut_dossier)}</td>
+    <td class="mono">${date}</td>
+  </tr>`;
+}
+
+async function createDossier179(){
+  const errEl=document.getElementById('e-n9');
+  errEl.textContent='';
+  const nom=document.getElementById('n9-nom').value.trim();
+  const prenom=document.getElementById('n9-prenom').value.trim();
+  const statut=document.getElementById('n9-statut').value;
+  const tel=document.getElementById('n9-tel').value.trim();
+  const email=document.getElementById('n9-email').value.trim();
+  const adresse=document.getElementById('n9-adresse').value.trim();
+  const surface=parseInt(document.getElementById('n9-surface').value);
+  const chauffage=document.getElementById('n9-chauffage').value;
+  if(!nom||!prenom||!statut||!tel||!email||!adresse||!surface||!chauffage){errEl.textContent='Veuillez remplir tous les champs obligatoires (*)';return;}
+  const {data,error}=await sb.from('formulaire_179').insert({
+    nom,prenom,statut,tel,email,adresse_client:adresse,
+    surface_m2:surface,
+    type_logement:document.getElementById('n9-type').value||null,
+    type_chauffage:chauffage,
+    code_apporteur:document.getElementById('n9-apporteur').value||null,
+    secretaire_id:document.getElementById('n9-secretaire').value||null,
+    date_echeance:document.getElementById('n9-echeance').value||null,
+    montant_prime:parseFloat(document.getElementById('n9-prime').value)||null,
+    reste_a_charge:parseFloat(document.getElementById('n9-rac').value)||null,
+    statut_dossier:document.getElementById('n9-statut-dossier').value,
+    commentaire:document.getElementById('n9-commentaire').value||null,
+  }).select().single();
+  if(error){errEl.textContent=error.message;return;}
+  allDossiers179.unshift({...data,source_table:'formulaire_179'});
+  resetNewDossier179();
+  showToast('Dossier 179 créé ✓');
+}
+
+function resetNewDossier179(){
+  ['n9-nom','n9-prenom','n9-tel','n9-email','n9-adresse','n9-surface','n9-commentaire','n9-prime','n9-rac','n9-echeance'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  ['n9-statut','n9-type','n9-chauffage','n9-apporteur','n9-secretaire'].forEach(id=>{
+    const el=document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('n9-statut-dossier').value='nouveau';
 }
 
 // ── APPORTEURS ──
