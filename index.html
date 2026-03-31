@@ -1369,9 +1369,8 @@ async function saveDossier(){
       const {error:upErr}=await sb.storage.from('storage').upload(path,pjf.file,{cacheControl:'3600',upsert:false});
       if(upErr){pjErr++;showToast('PJ upload: '+upErr.message,true);}
       else{
-        const {error:insErr}=await sb.from('dossier_pj').upsert(
-          {dossier_id:id,nom:pjf.nom,path,taille:pjf.file.size,uploaded_by:currentUser.id},
-          {onConflict:'path',ignoreDuplicates:true}
+        const {error:insErr}=await sb.from('dossier_pj').insert(
+          {dossier_id:id,nom:pjf.nom,path,taille:pjf.file.size,uploaded_by:currentUser.id}
         );
         if(insErr){pjErr++;showToast('PJ insert: '+insErr.message,true);}
         else pjOk++;
