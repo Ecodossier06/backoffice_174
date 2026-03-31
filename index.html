@@ -477,6 +477,7 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
               <option value="sarl">SARL</option>
               <option value="sas">SAS</option>
               <option value="eurl">EURL</option>
+              <option value="syndicat">Syndicat</option>
               <option value="autre">Autre</option>
             </select>
           </div>
@@ -848,7 +849,7 @@ let currentDossier=null, modalMateriels=[], modalPjFiles=[];
 const ROLE_LABELS={admin:'👑 Admin',responsable:'🎯 Responsable',secretaire:'📋 Secrétaire'};
 const GESTE_LABELS={comble:'Combles',plancher_bas:'Plancher bas',mur_interieur_25:'Mur int. 25%'};
 const STATUT_BEN={grand_precaire:'Grand Précaire',sci:'SCI'};
-const STATUT_BEN_179={grand_precaire:'Grand Précaire',classique:'Classique',sci:'SCI',sarl:'SARL',sas:'SAS',eurl:'EURL',autre:'Autre'};
+const STATUT_BEN_179={grand_precaire:'Grand Précaire',classique:'Classique',sci:'SCI',sarl:'SARL',sas:'SAS',eurl:'EURL',syndicat:'Syndicat',autre:'Autre'};
 
 // ── AUTH ──
 async function doLogin(){
@@ -1352,23 +1353,33 @@ async function saveDossier(){
   };
   const tableName = currentDossier?.source_table || 'formulaire_174';
   const {error}=await sb.from(tableName).update(upd).eq('id',id);
-  if(error){showToast(error.message,true);return;}
-  const arr = tableName==='formulaire_179' ? allDossiers179 : allDossiers;
-  const idx=arr.findIndex(d=>d.id===id);
-  if(idx>-1) arr[idx]={...arr[idx],...upd};
+  if(error){showToast('Erreur save: '+error.message,true);}
+  else {
+    const arr = tableName==='formulaire_179' ? allDossiers179 : allDossiers;
+    const idx=arr.findIndex(d=>d.id===id);
+    if(idx>-1) arr[idx]={...arr[idx],...upd};
+  }
 
-  // Upload nouvelles PJ
+  // Upload nouvelles PJ (indépendant du résultat du UPDATE)
   if(modalPjFiles.length>0){
+    let pjOk=0, pjErr=0;
     for(const pjf of modalPjFiles){
       const ext=pjf.file.name.split('.').pop();
       const path=`dossiers/${id}/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
       const {error:upErr}=await sb.storage.from('storage').upload(path,pjf.file,{cacheControl:'3600',upsert:false});
-      if(!upErr){
-        await sb.from('dossier_pj').insert({dossier_id:id,nom:pjf.nom,path,taille:pjf.file.size,uploaded_by:currentUser.id});
+      if(upErr){pjErr++;showToast('PJ upload: '+upErr.message,true);}
+      else{
+        const {error:insErr}=await sb.from('dossier_pj').upsert(
+          {dossier_id:id,nom:pjf.nom,path,taille:pjf.file.size,uploaded_by:currentUser.id},
+          {onConflict:'path',ignoreDuplicates:true}
+        );
+        if(insErr){pjErr++;showToast('PJ insert: '+insErr.message,true);}
+        else pjOk++;
       }
     }
     modalPjFiles=[];
     await loadModalPJ(id);
+    if(pjOk>0) showToast(`${pjOk} PJ ajoutée${pjOk>1?'s':''} ✓`);
   }
 
   // Upload nouvelles photos
