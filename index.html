@@ -212,7 +212,7 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
       <div class="login-logo-icon">⚡</div>
       <h1>BackOffice CEE</h1>
       <p>Espace administration</p>
-      <p>v.2.4</p>
+      <p>v.2.2</p>
     </div>
     <form onsubmit="event.preventDefault();doLogin();" autocomplete="on">
       <div class="lf"><label>Email</label><input type="email" id="l-email" placeholder="admin@domaine.fr" autocomplete="email"></div>
@@ -398,8 +398,11 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
         <div class="section-title">💼 Gestion</div>
         <div class="fi-row c4">
           <div class="fi-group"><div class="fi-label">Date échéance</div><input class="fi-input" id="nd-echeance" type="date"></div>
+          <div class="fi-group"><div class="fi-label">Montant du devis (€)</div><input class="fi-input" id="nd-devis" type="number" step="0.01" placeholder="0.00"></div>
           <div class="fi-group"><div class="fi-label">Montant prime (€)</div><input class="fi-input" id="nd-prime" type="number" step="0.01" placeholder="0.00"></div>
           <div class="fi-group"><div class="fi-label">Reste à charge (€)</div><input class="fi-input" id="nd-rac" type="number" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="fi-row c2">
           <div class="fi-group">
             <div class="fi-label">Statut</div>
             <select class="fi-select" id="nd-statut-dossier">
@@ -465,11 +468,16 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
         </div>
         <div class="fi-row c2">
           <div class="fi-group">
-            <div class="fi-label">Statut *</div>
+            <div class="fi-label">Bénéficiaire *</div>
             <select class="fi-select" id="n9-statut">
               <option value="">— Choisir —</option>
               <option value="grand_precaire">Grand Précaire</option>
+              <option value="classique">Classique</option>
               <option value="sci">SCI</option>
+              <option value="sarl">SARL</option>
+              <option value="sas">SAS</option>
+              <option value="eurl">EURL</option>
+              <option value="autre">Autre</option>
             </select>
           </div>
           <div class="fi-group"><div class="fi-label">Téléphone *</div><input class="fi-input" id="n9-tel" placeholder="06 12 34 56 78" type="tel"></div>
@@ -490,10 +498,8 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
             <div class="fi-label">Type *</div>
             <select class="fi-select" id="n9-type">
               <option value="">—</option>
-              <option value="maison_individuelle">Maison individuelle</option>
-              <option value="appartement">Appartement</option>
-              <option value="maison_jumelee">Maison jumelée</option>
-              <option value="maison_mitoyenne">Maison mitoyenne</option>
+              <option value="collectif">Collectif</option>
+              <option value="habitat_communautaire">Habitat communautaire</option>
             </select>
           </div>
           <div class="fi-group"><div class="fi-label">Surface m² *</div><input class="fi-input" id="n9-surface" type="number" placeholder="85" min="1"></div>
@@ -519,8 +525,11 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
         <div class="section-title">💼 Gestion</div>
         <div class="fi-row c4">
           <div class="fi-group"><div class="fi-label">Date échéance</div><input class="fi-input" id="n9-echeance" type="date"></div>
+          <div class="fi-group"><div class="fi-label">Montant du devis (€)</div><input class="fi-input" id="n9-devis" type="number" step="0.01" placeholder="0.00"></div>
           <div class="fi-group"><div class="fi-label">Montant prime (€)</div><input class="fi-input" id="n9-prime" type="number" step="0.01" placeholder="0.00"></div>
           <div class="fi-group"><div class="fi-label">Reste à charge (€)</div><input class="fi-input" id="n9-rac" type="number" step="0.01" placeholder="0.00"></div>
+        </div>
+        <div class="fi-row c2">
           <div class="fi-group">
             <div class="fi-label">Statut</div>
             <select class="fi-select" id="n9-statut-dossier">
@@ -660,7 +669,7 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
         <div class="fi-group"><div class="fi-label">Vendeur</div><input class="fi-input" id="md-deposant" placeholder="Prénom Nom du vendeur"></div>
       </div>
       <div class="fi-row c2">
-        <div class="fi-group"><div class="fi-label">Catégorie</div>
+        <div class="fi-group"><div class="fi-label" id="md-statut-ben-label">Catégorie</div>
           <select class="fi-select" id="md-statut-ben">
             <option value="">—</option>
             <option value="grand_precaire">Grand Précaire</option>
@@ -676,6 +685,8 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
             <option value="appartement">Appartement</option>
             <option value="maison_jumelee">Maison jumelée</option>
             <option value="maison_mitoyenne">Maison mitoyenne</option>
+            <option value="collectif">Collectif</option>
+            <option value="habitat_communautaire">Habitat communautaire</option>
           </select>
         </div>
         <div class="fi-group"><div class="fi-label">Surface m²</div><input class="fi-input" id="md-surface" type="number" min="1"></div>
@@ -691,8 +702,7 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
           </select>
         </div>
       </div>
-      <div class="fi-row c2">
-        <div class="fi-group"><div class="fi-label">Geste 1</div>
+      <div class="fi-row c2" id="md-gestes-row">
           <select class="fi-select" id="md-g1">
             <option value="">—</option>
             <option value="comble">Toiture / Combles</option>
@@ -728,8 +738,9 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
           <select class="fi-select" id="md-secretaire"><option value="">— Aucune —</option></select>
         </div>
       </div>
-      <div class="fi-row c3">
+      <div class="fi-row c4">
         <div class="fi-group"><div class="fi-label">Date échéance</div><input class="fi-input" id="md-echeance" type="date"></div>
+        <div class="fi-group"><div class="fi-label">Montant du devis (€)</div><input class="fi-input" id="md-devis" type="number" step="0.01"></div>
         <div class="fi-group"><div class="fi-label">Montant prime (€)</div><input class="fi-input" id="md-prime" type="number" step="0.01"></div>
         <div class="fi-group"><div class="fi-label">Reste à charge (€)</div><input class="fi-input" id="md-rac" type="number" step="0.01"></div>
       </div>
@@ -790,6 +801,29 @@ tr:hover td{background:rgba(46,125,71,.03);cursor:pointer;}
 <div class="toast" id="toast"></div>
 
 <script>
+// ── NETTOYAGE SESSION AU DÉMARRAGE ──
+(function cleanStaleSession(){
+  try {
+    const sbKey=Object.keys(localStorage).find(k=>k.startsWith('sb-'));
+    if(sbKey){
+      const stored=JSON.parse(localStorage.getItem(sbKey));
+      // Supprimer si corrompu ou token expiré
+      if(!stored?.access_token || !stored?.refresh_token){
+        localStorage.removeItem(sbKey);
+      } else {
+        // Vérifier expiration du access_token (JWT payload)
+        try{
+          const payload=JSON.parse(atob(stored.access_token.split('.')[1]));
+          if(payload.exp && payload.exp < Date.now()/1000 - 3600){
+            // Expiré depuis plus d'1h → nettoyer (le refresh échouera de toute façon)
+            localStorage.removeItem(sbKey);
+          }
+        }catch(e){}
+      }
+    }
+  }catch(e){}
+})();
+
 const SB_URL  = "https://upultfflbxrghptavwvf.supabase.co";
 const SB_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVwdWx0ZmZsYnhyZ2hwdGF2d3ZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMwNjU1MDYsImV4cCI6MjA4ODY0MTUwNn0.Uq2AnyqYJeCztqzDjUWNYk0LvhS3gGIXn3TlxQo17ug";
 const sb = supabase.createClient(SB_URL, SB_ANON, {
@@ -813,6 +847,7 @@ let currentDossier=null, modalMateriels=[], modalPjFiles=[];
 const ROLE_LABELS={admin:'👑 Admin',responsable:'🎯 Responsable',secretaire:'📋 Secrétaire'};
 const GESTE_LABELS={comble:'Combles',plancher_bas:'Plancher bas',mur_interieur_25:'Mur int. 25%'};
 const STATUT_BEN={grand_precaire:'Grand Précaire',sci:'SCI'};
+const STATUT_BEN_179={grand_precaire:'Grand Précaire',classique:'Classique',sci:'SCI',sarl:'SARL',sas:'SAS',eurl:'EURL',autre:'Autre'};
 
 // ── AUTH ──
 async function doLogin(){
@@ -898,7 +933,11 @@ async function initApp(user){
     document.getElementById('nav-gestion').style.display='block';
     const btnExp=document.getElementById('btn-export'); if(btnExp) btnExp.style.display='inline-flex';
   }
-  await Promise.all([loadDossiers(),loadDossiers179(),loadApporteurs(),loadMateriel(),loadSecretaires(),loadStatuts()]);
+  await Promise.all([
+    loadDossiers(),
+    loadDossiers179().catch(e=>{console.warn('loadDossiers179:',e);allDossiers179=[];}),
+    loadApporteurs(),loadMateriel(),loadSecretaires(),loadStatuts()
+  ]);
   renderDashboard();
   populateSelects();
 }
@@ -961,7 +1000,7 @@ function populateSelects(){
   const secSels=[document.getElementById('nd-secretaire'),document.getElementById('md-secretaire'),document.getElementById('f-secretaire-d'),document.getElementById('n9-secretaire'),document.getElementById('f-secretaire-d179')];
   secSels.forEach(sel=>{
     if(!sel) return;
-    const isFilter=sel.id==='f-secretaire-d';
+    const isFilter=sel.id==='f-secretaire-d'||sel.id==='f-secretaire-d179';
     sel.innerHTML=isFilter?'<option value="">Tous assignés</option>':'<option value="">— Aucun(e) —</option>';
     allSecretaires.forEach(s=>{
       const o=document.createElement('option');
@@ -987,7 +1026,9 @@ function populateSelects(){
 function renderDashboard(){
   // ── 174 ──
   const grid=document.getElementById('stat-grid');
+  const totalDevis174=allDossiers.reduce((s,d)=>s+(d.montant_devis||0),0);
   let html=`<div class="stat-card"><div class="stat-icon">📁</div><div class="stat-label">Total</div><div class="stat-val">${allDossiers.length}</div></div>`;
+  html+=`<div class="stat-card blue"><div class="stat-icon">💶</div><div class="stat-label">CA Devis</div><div class="stat-val" style="font-size:20px;">${totalDevis174.toLocaleString('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0})}</div></div>`;
   customStatuts.forEach(s=>{
     const count=allDossiers.filter(d=>d.statut_dossier===s.key).length;
     html+=`<div class="stat-card" style="--accent:${s.color}"><div class="stat-icon"><span class="badge" style="background:${s.color}22;color:${s.color};font-size:14px;">●</span></div><div class="stat-label">${s.label}</div><div class="stat-val">${count}</div></div>`;
@@ -997,7 +1038,9 @@ function renderDashboard(){
 
   // ── 179 ──
   const grid179=document.getElementById('stat-grid-179');
+  const totalDevis179=allDossiers179.reduce((s,d)=>s+(d.montant_devis||0),0);
   let html179=`<div class="stat-card"><div class="stat-icon">🌬️</div><div class="stat-label">Total</div><div class="stat-val">${allDossiers179.length}</div></div>`;
+  html179+=`<div class="stat-card blue"><div class="stat-icon">💶</div><div class="stat-label">CA Devis</div><div class="stat-val" style="font-size:20px;">${totalDevis179.toLocaleString('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0})}</div></div>`;
   customStatuts.forEach(s=>{
     const count=allDossiers179.filter(d=>d.statut_dossier===s.key).length;
     html179+=`<div class="stat-card" style="--accent:${s.color}"><div class="stat-icon"><span class="badge" style="background:${s.color}22;color:${s.color};font-size:14px;">●</span></div><div class="stat-label">${s.label}</div><div class="stat-val">${count}</div></div>`;
@@ -1163,21 +1206,41 @@ async function openDossier(id){
   document.getElementById('md-email').value=d.email||'';
   document.getElementById('md-adresse').value=d.adresse_client||'';
   document.getElementById('md-deposant').value=d.prenom_deposant||'';
-  document.getElementById('md-statut-ben').value=d.statut||'';
+  document.getElementById('md-statut').value=d.statut_dossier||'nouveau';
+  document.getElementById('md-secretaire').value=d.secretaire_id||'';
+  document.getElementById('md-echeance').value=d.date_echeance||'';
+  document.getElementById('md-devis').value=d.montant_devis||'';
+  document.getElementById('md-prime').value=d.montant_prime||'';
+  document.getElementById('md-rac').value=d.reste_a_charge||'';
+  document.getElementById('md-commentaire').value=d.commentaire||'';
+  document.getElementById('md-commentaire-tech').value=d.commentaire_technique||'';
+
+  // Adapter le modal selon le type de fiche
+  const is179 = d.source_table==='formulaire_179';
+  const lblBen = document.getElementById('md-statut-ben-label');
+  const selBen = document.getElementById('md-statut-ben');
+  const selType = document.getElementById('md-type');
+  if(is179){
+    lblBen.textContent='Bénéficiaire';
+    selBen.innerHTML='<option value="">—</option>'+Object.entries(STATUT_BEN_179).map(([k,v])=>`<option value="${k}">${v}</option>`).join('');
+    Array.from(selType.options).forEach(o=>{
+      o.hidden=!['collectif','habitat_communautaire',''].includes(o.value);
+    });
+  } else {
+    lblBen.textContent='Catégorie';
+    selBen.innerHTML='<option value="">—</option><option value="grand_precaire">Grand Précaire</option><option value="sci">SCI</option>';
+    Array.from(selType.options).forEach(o=>{
+      o.hidden=!['maison_individuelle','appartement','maison_jumelee','maison_mitoyenne',''].includes(o.value);
+    });
+  }
+  selBen.value=d.statut||'';
   document.getElementById('md-type').value=d.type_logement||'';
   document.getElementById('md-surface').value=d.surface_m2||'';
   document.getElementById('md-chauffage').value=d.type_chauffage||'';
   document.getElementById('md-g1').value=d.geste_1||'';
   document.getElementById('md-g2').value=d.geste_2||'';
-
-  // Gestion
-  document.getElementById('md-statut').value=d.statut_dossier||'nouveau';
-  document.getElementById('md-secretaire').value=d.secretaire_id||'';
-  document.getElementById('md-echeance').value=d.date_echeance||'';
-  document.getElementById('md-prime').value=d.montant_prime||'';
-  document.getElementById('md-rac').value=d.reste_a_charge||'';
-  document.getElementById('md-commentaire').value=d.commentaire||'';
-  document.getElementById('md-commentaire-tech').value=d.commentaire_technique||'';
+  // Masquer/afficher gestes selon fiche
+  document.getElementById('md-gestes-row').style.display=is179?'none':'';
 
   // Matériel
   await loadModalMateriel(d.id);
@@ -1281,6 +1344,7 @@ async function saveDossier(){
     secretaire_id:document.getElementById('md-secretaire').value||null,
     date_echeance:document.getElementById('md-echeance').value||null,
     montant_prime:parseFloat(document.getElementById('md-prime').value)||null,
+    montant_devis:parseFloat(document.getElementById('md-devis').value)||null,
     reste_a_charge:parseFloat(document.getElementById('md-rac').value)||null,
     commentaire:document.getElementById('md-commentaire').value||null,
     commentaire_technique:document.getElementById('md-commentaire-tech').value||null,
@@ -1434,6 +1498,7 @@ async function createDossier(){
     secretaire_id:document.getElementById('nd-secretaire').value||null,
     date_echeance:document.getElementById('nd-echeance').value||null,
     montant_prime:parseFloat(document.getElementById('nd-prime').value)||null,
+    montant_devis:parseFloat(document.getElementById('nd-devis').value)||null,
     reste_a_charge:parseFloat(document.getElementById('nd-rac').value)||null,
     statut_dossier:document.getElementById('nd-statut-dossier').value,
     commentaire:document.getElementById('nd-commentaire').value||null,
@@ -1446,7 +1511,7 @@ async function createDossier(){
 }
 
 function resetNewDossier(){
-  ['nd-nom','nd-prenom','nd-tel','nd-email','nd-adresse','nd-deposant','nd-surface','nd-commentaire','nd-prime','nd-rac','nd-echeance'].forEach(id=>{
+  ['nd-nom','nd-prenom','nd-tel','nd-email','nd-adresse','nd-deposant','nd-surface','nd-devis','nd-commentaire','nd-prime','nd-rac','nd-echeance'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   ['nd-statut','nd-type','nd-chauffage','nd-geste1','nd-geste2','nd-apporteur','nd-secretaire'].forEach(id=>{
@@ -1541,6 +1606,7 @@ async function createDossier179(){
     secretaire_id:document.getElementById('n9-secretaire').value||null,
     date_echeance:document.getElementById('n9-echeance').value||null,
     montant_prime:parseFloat(document.getElementById('n9-prime').value)||null,
+    montant_devis:parseFloat(document.getElementById('n9-devis').value)||null,
     reste_a_charge:parseFloat(document.getElementById('n9-rac').value)||null,
     statut_dossier:document.getElementById('n9-statut-dossier').value,
     commentaire:document.getElementById('n9-commentaire').value||null,
@@ -1552,7 +1618,7 @@ async function createDossier179(){
 }
 
 function resetNewDossier179(){
-  ['n9-nom','n9-prenom','n9-tel','n9-email','n9-adresse','n9-deposant','n9-surface','n9-commentaire','n9-prime','n9-rac','n9-echeance'].forEach(id=>{
+  ['n9-nom','n9-prenom','n9-tel','n9-email','n9-adresse','n9-deposant','n9-surface','n9-devis','n9-commentaire','n9-prime','n9-rac','n9-echeance'].forEach(id=>{
     const el=document.getElementById(id); if(el) el.value='';
   });
   ['n9-statut','n9-type','n9-chauffage','n9-apporteur','n9-secretaire'].forEach(id=>{
